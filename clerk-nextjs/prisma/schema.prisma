@@ -9,4 +9,31 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  userId        String   // Matches the user ID from Clerk
+  
+  description   String   // e.g., "Meralco Bill", "Jollibee", "Salary"
+  amount        Float    // The actual monetary value
+  type          TransactionType // Is money coming IN or going OUT?
+  
+  category      String   // e.g., "Food", "Utilities", "Salary"
+  paymentMethod String   // e.g., "GCash", "BDO", "Cash"
+  
+  // Using a separate date field allows users to log past transactions
+  transactionDate DateTime @default(now()) 
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // This index will make your dashboard load much faster when filtering by user
+  @@index([userId])
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
 }
