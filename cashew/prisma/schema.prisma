@@ -9,14 +9,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  
 }
 
 model Transaction {
   id            String   @id @default(cuid())
   userId        String   // Matches the user ID from Clerk
   
-  description   String   // e.g., "Meralco Bill", "Jollibee", "Salary"
+  description   String?   // e.g., "Meralco Bill", "Jollibee", "Salary"
   amount        Float    // The actual monetary value
   type          TransactionType // Is money coming IN or going OUT?
   

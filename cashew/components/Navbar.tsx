@@ -13,9 +13,9 @@ const Navbar = () => {
   return (
     <header className="relative z-50 m-4 rounded-xl bg-sidebar font-plus-jakarta-sans text-white shadow-lg">
       <div className="flex h-16 items-center justify-between gap-4 px-4 py-4 md:px-6">
-        <button className="text-lg font-semibold text-white" onClick={closeMenu}>Cashew</button>
-
-        <nav className="hidden items-center gap-2 md:flex">
+      
+        <nav className="hidden items-center gap-6 md:flex">
+          <button className="text-xl font-semibold text-white" onClick={closeMenu}>Cashew</button>
           {navItems.map((item) => (
             <button
               key={item}

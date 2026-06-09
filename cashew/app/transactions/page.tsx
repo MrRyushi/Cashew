@@ -9,6 +9,7 @@ import {
   Tv, GraduationCap, Briefcase, LineChart, Gift,
   MoreHorizontal, Search, SlidersHorizontal, X,
   ArrowUpRight, ArrowDownRight,
+  DollarSign,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,19 +31,29 @@ import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-type TransactionType = "income" | "expense";
+type TransactionType = "INCOME" | "EXPENSE";
 
 interface Transaction {
   id: string;
   type: TransactionType;
   amount: number;
   category: string;
-  note?: string | null;
-  date: string;
+  description?: string | null;
+  paymentMethod: string;
+  transactionDate: string;
   createdAt: string;
 }
 
 type FilterType = "all" | TransactionType;
+
+interface TransactionForm {
+  type: TransactionType;
+  amount: string;
+  category: string;
+  description: string;
+  paymentMethod: string;
+  transactionDate: string;
+}
 
 interface Toast {
   id: string;
@@ -53,11 +64,11 @@ interface Toast {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const CATEGORIES: Record<TransactionType, string[]> = {
-  income: ["Salary", "Freelance", "Business", "Investment", "Gift", "Other"],
-  expense: [
+  INCOME: ["Salary", "Freelance", "Business", "Investment", "Gift", "Allowance", "Other"],
+  EXPENSE: [
     "Food & Drink", "Transportation", "Utilities",
     "Rent", "Healthcare", "Entertainment",
-    "Shopping", "Education", "Other",
+    "Shopping", "Education", "Sports & Gym", "Other",
   ],
 };
 
@@ -76,15 +87,18 @@ const CATEGORY_META: Record<string, { icon: React.ElementType; color: string; bg
   "Entertainment":  { icon: Tv,          color: "text-purple-600",  bg: "bg-purple-50"  },
   "Shopping":       { icon: ShoppingCart,color: "text-rose-600",    bg: "bg-rose-50"    },
   "Education":      { icon: GraduationCap,color:"text-teal-600",    bg: "bg-teal-50"    },
+  "Sports & Gym":     { icon: Zap,         color: "text-green-600",   bg: "bg-green-50"   },
   "Other":          { icon: MoreHorizontal,color:"text-slate-500",  bg: "bg-slate-100"  },
+  "Allowance":      { icon: DollarSign,        color: "text-yellow-600",  bg: "bg-yellow-50"   },
 };
 
 const EMPTY_FORM = {
-  type: "expense" as TransactionType,
+  type: "EXPENSE" as TransactionType,
   amount: "",
   category: "",
-  note: "",
-  date: new Date().toISOString().split("T")[0],
+  description: "",
+  paymentMethod: "",
+  transactionDate: new Date().toISOString().split("T")[0],
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -110,7 +124,7 @@ function formatDate(dateStr: string) {
 
 function groupByDate(txs: Transaction[]): Record<string, Transaction[]> {
   return txs.reduce((groups, tx) => {
-    const key = new Date(tx.date).toDateString();
+    const key = new Date(tx.transactionDate).toDateString();
     if (!groups[key]) groups[key] = [];
     groups[key].push(tx);
     return groups;
@@ -122,7 +136,7 @@ function groupByDate(txs: Transaction[]): Record<string, Transaction[]> {
 function SkeletonRow() {
   return (
     <div className="flex items-center gap-4 px-5 py-4 animate-pulse">
-      <div className="w-9 h-9 rounded-lg bg-slate-100 flex-shrink-0" />
+      <div className="w-9 h-9 rounded-lg bg-slate-100 shrink-0" />
       <div className="flex-1 space-y-2">
         <div className="h-3.5 bg-slate-100 rounded w-1/3" />
         <div className="h-2.5 bg-slate-100 rounded w-1/5" />
@@ -147,8 +161,8 @@ function ToastNotification({ toasts }: { toasts: Toast[] }) {
           )}
         >
           {t.variant === "success"
-            ? <TrendingUp className="w-4 h-4 flex-shrink-0" />
-            : <X className="w-4 h-4 flex-shrink-0" />}
+            ? <TrendingUp className="w-4 h-4 shrink-0" />
+            : <X className="w-4 h-4 shrink-0" />}
           {t.message}
         </div>
       ))}
@@ -166,7 +180,7 @@ export default function TransactionsPage() {
   // Dialog / form state
   const [dialogOpen, setDialogOpen]       = useState(false);
   const [editingId, setEditingId]         = useState<string | null>(null);
-  const [form, setForm]                   = useState(EMPTY_FORM);
+  const [form, setForm]                   = useState<TransactionForm>(EMPTY_FORM);
   const [submitting, setSubmitting]       = useState(false);
   const [formError, setFormError]         = useState<string | null>(null);
 
@@ -225,8 +239,9 @@ export default function TransactionsPage() {
       type:     tx.type,
       amount:   String(tx.amount),
       category: tx.category,
-      note:     tx.note || "",
-      date:     tx.date.split("T")[0],
+      description: tx.description || "",
+      paymentMethod: tx.paymentMethod,
+      transactionDate: tx.transactionDate.split("T")[0],
     });
     setFormError(null);
     setDialogOpen(true);
@@ -245,18 +260,24 @@ export default function TransactionsPage() {
       setFormError("Please select a category.");
       return;
     }
-    if (!form.date) {
+    if (!form.paymentMethod) {
+      setFormError("Please select a payment method.");
+      return;
+    }
+    if (!form.transactionDate) {
       setFormError("Please select a date.");
       return;
     }
 
     setSubmitting(true);
+    
     const payload = {
-      type:     form.type,
+      description: form.description || null,
       amount:   parseFloat(form.amount),
+      type:     form.type,
       category: form.category,
-      note:     form.note || null,
-      date:     form.date,
+      paymentMethod: form.paymentMethod,
+      transactionDate: form.transactionDate,
     };
 
     try {
@@ -274,6 +295,8 @@ export default function TransactionsPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
+        const data = await res.json();
+        console.log(data);
         if (!res.ok) throw new Error("Create failed");
         showToast("Transaction added successfully.");
       }
@@ -307,11 +330,11 @@ export default function TransactionsPage() {
 
   // ── Derived data ──────────────────────────────────────────────────────────
   const totalIncome = transactions
-    .filter((t) => t.type === "income")
+    .filter((t) => t.type === "INCOME")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const totalExpenses = transactions
-    .filter((t) => t.type === "expense")
+    .filter((t) => t.type === "EXPENSE")
     .reduce((sum, t) => sum + t.amount, 0);
 
   const netBalance = totalIncome - totalExpenses;
@@ -323,7 +346,7 @@ export default function TransactionsPage() {
       const q = search.toLowerCase();
       return (
         t.category.toLowerCase().includes(q) ||
-        (t.note?.toLowerCase().includes(q) ?? false)
+        (t.description?.toLowerCase().includes(q) ?? false)
       );
     });
 
@@ -424,7 +447,7 @@ export default function TransactionsPage() {
             {/* Filter pills */}
             <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-1.5 py-1">
               <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400 ml-1" />
-              {(["all", "income", "expense"] as const).map((f) => (
+              {(["all", "INCOME", "EXPENSE"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilterType(f)}
@@ -506,7 +529,7 @@ export default function TransactionsPage() {
               <div>
                 {dateKeys.map((dateKey, groupIdx) => {
                   const dayTxs = grouped[dateKey];
-                  const dayLabel = formatDate(dayTxs[0].date);
+                  const dayLabel = formatDate(dayTxs[0].transactionDate);
 
                   return (
                     <div key={dateKey}>
@@ -536,7 +559,7 @@ export default function TransactionsPage() {
                             >
                               {/* Category icon */}
                               <div className={cn(
-                                "w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0",
+                                "w-9 h-9 rounded-xl flex items-center justify-center shrink-0",
                                 meta.bg
                               )}>
                                 <Icon className={cn("w-4 h-4", meta.color)} />
@@ -545,12 +568,12 @@ export default function TransactionsPage() {
                               {/* Info */}
                               <div className="flex-1 min-w-0">
                                 <p className="text-sm font-medium text-slate-800 truncate leading-snug">
-                                  {tx.note || tx.category}
+                                  {tx.description || tx.category}
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                   <span className={cn(
                                     "inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full",
-                                    tx.type === "income"
+                                    tx.type === "INCOME"
                                       ? "bg-emerald-50 text-emerald-700"
                                       : "bg-slate-100 text-slate-500"
                                   )}>
@@ -561,15 +584,15 @@ export default function TransactionsPage() {
 
                               {/* Amount */}
                               <span className={cn(
-                                "font-mono text-sm font-semibold tabular-nums flex-shrink-0",
-                                tx.type === "income" ? "text-emerald-600" : "text-slate-700"
+                                "font-mono text-sm font-semibold tabular-nums shrink-0",
+                                tx.type === "INCOME" ? "text-emerald-600" : "text-slate-700"
                               )}>
-                                {tx.type === "income" ? "+" : "−"}
+                                {tx.type === "INCOME" ? "+" : "−"}
                                 {formatCurrency(tx.amount)}
                               </span>
 
                               {/* Actions — visible on hover */}
-                              <div className="flex items-center gap-0.5 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <div className="flex items-center gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <button
                                   onClick={() => openEdit(tx)}
                                   className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-500 hover:bg-indigo-50 transition-colors"
@@ -607,7 +630,7 @@ export default function TransactionsPage() {
 
       {/* ── Add / Edit Dialog ── */}
       <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); setFormError(null); }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md bg-surface">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">
               {editingId ? "Edit transaction" : "New transaction"}
@@ -617,21 +640,21 @@ export default function TransactionsPage() {
           <div className="grid gap-4 py-1">
 
             {/* Type toggle */}
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl">
-              {(["expense", "income"] as const).map((t) => (
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-xl">
+              {(["EXPENSE", "INCOME"] as const).map((t) => (
                 <button
                   key={t}
                   onClick={() => setForm({ ...form, type: t, category: "" })}
                   className={cn(
                     "py-2 rounded-lg text-sm font-medium transition-all capitalize",
                     form.type === t
-                      ? t === "income"
+                      ? t === "INCOME"
                         ? "bg-white text-emerald-600 shadow-sm ring-1 ring-emerald-200"
                         : "bg-white text-rose-500 shadow-sm ring-1 ring-rose-200"
                       : "text-slate-500 hover:text-slate-700"
                   )}
                 >
-                  {t === "income"
+                  {t === "INCOME"
                     ? <span className="flex items-center justify-center gap-1.5"><TrendingUp className="w-3.5 h-3.5" />Income</span>
                     : <span className="flex items-center justify-center gap-1.5"><TrendingDown className="w-3.5 h-3.5" />Expense</span>
                   }
@@ -674,7 +697,7 @@ export default function TransactionsPage() {
                     const meta = CATEGORY_META[cat] ?? CATEGORY_META["Other"];
                     const CatIcon = meta.icon;
                     return (
-                      <SelectItem key={cat} value={cat} className="text-sm">
+                      <SelectItem key={cat} value={cat} className="text-sm bg-white hover:bg-slate-100">
                         <span className="flex items-center gap-2">
                           <span className={cn("flex w-5 h-5 rounded items-center justify-center", meta.bg)}>
                             <CatIcon className={cn("w-3 h-3", meta.color)} />
@@ -688,28 +711,51 @@ export default function TransactionsPage() {
               </Select>
             </div>
 
-            {/* Note */}
+            {/* Description */}
             <div className="grid gap-1.5">
-              <Label htmlFor="note" className="text-xs font-medium text-slate-600">
-                Note <span className="text-slate-400 font-normal">(optional)</span>
+              <Label htmlFor="description" className="text-xs font-medium text-slate-600">
+                Description <span className="text-slate-400 font-normal">(optional)</span>
               </Label>
               <Input
-                id="note"
+                id="description"
                 placeholder="e.g. Lunch with team"
-                value={form.note}
-                onChange={(e) => setForm({ ...form, note: e.target.value })}
+                value={form.description}
+                onChange={(e) => setForm({ ...form, description: e.target.value })}
                 className="text-sm focus-visible:ring-indigo-400"
               />
             </div>
 
+            {/* Payment Method */}
+            <div className="grid gap-1.5">
+              <Label className="text-xs font-medium text-slate-600">Payment Method</Label>
+              <Select
+                value={form.paymentMethod}
+                onValueChange={(v) => setForm({ ...form, paymentMethod: v ?? "" })}
+              >
+                <SelectTrigger className="text-sm focus:ring-indigo-400">
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Cash" className="text-sm bg-white hover:bg-slate-100">Cash</SelectItem>
+                  <SelectItem value="Credit Card" className="text-sm bg-white hover:bg-slate-100">Credit Card</SelectItem>
+                  <SelectItem value="Debit Card" className="text-sm bg-white hover:bg-slate-100">Debit Card</SelectItem>
+                  <SelectItem value="GCash" className="text-sm bg-white hover:bg-slate-100">GCash</SelectItem>
+                  <SelectItem value="PayPal" className="text-sm bg-white hover:bg-slate-100">PayPal</SelectItem>
+                  <SelectItem value="Bank Transfer" className="text-sm bg-white hover:bg-slate-100">Bank Transfer</SelectItem>
+                  <SelectItem value="Check" className="text-sm bg-white hover:bg-slate-100">Check</SelectItem>
+                  <SelectItem value="Other" className="text-sm bg-white hover:bg-slate-100">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
             {/* Date */}
             <div className="grid gap-1.5">
-              <Label htmlFor="date" className="text-xs font-medium text-slate-600">Date</Label>
+              <Label htmlFor="transactionDate" className="text-xs font-medium text-slate-600">Date</Label>
               <Input
-                id="date"
+                id="transactionDate"
                 type="date"
-                value={form.date}
-                onChange={(e) => setForm({ ...form, date: e.target.value })}
+                value={form.transactionDate}
+                onChange={(e) => setForm({ ...form, transactionDate: e.target.value })}
                 className="text-sm focus-visible:ring-indigo-400"
               />
             </div>
@@ -717,7 +763,7 @@ export default function TransactionsPage() {
             {/* Inline form error */}
             {formError && (
               <p className="text-xs text-rose-500 flex items-center gap-1.5">
-                <X className="w-3 h-3 flex-shrink-0" />
+                <X className="w-3 h-3 shrink-0" />
                 {formError}
               </p>
             )}
@@ -734,7 +780,7 @@ export default function TransactionsPage() {
             <Button
               onClick={handleSubmit}
               disabled={submitting}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white text-sm min-w-[120px]"
+              className="bg-indigo-500 hover:bg-indigo-600 text-white text-sm min-w-30"
             >
               {submitting
                 ? <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Saving…</span>
@@ -752,7 +798,7 @@ export default function TransactionsPage() {
             <AlertDialogTitle className="text-base font-semibold">Delete transaction?</AlertDialogTitle>
             <AlertDialogDescription className="text-sm text-slate-500">
               {deletingTx
-                ? <>This will permanently delete <strong className="text-slate-700">{deletingTx.note || deletingTx.category}</strong> ({formatCurrency(deletingTx.amount)}). This cannot be undone.</>
+                ? <>This will permanently delete <strong className="text-slate-700">{deletingTx.description || deletingTx.category}</strong> ({formatCurrency(deletingTx.amount)}). This cannot be undone.</>
                 : "This action cannot be undone."
               }
             </AlertDialogDescription>
@@ -764,7 +810,7 @@ export default function TransactionsPage() {
             <AlertDialogAction
               onClick={handleDelete}
               disabled={deleting}
-              className="bg-rose-500 hover:bg-rose-600 text-white text-sm min-w-[80px]"
+              className="bg-rose-500 hover:bg-rose-600 text-white text-sm min-w-20"
             >
               {deleting
                 ? <span className="flex items-center gap-2"><span className="w-3.5 h-3.5 border-2 border-white/30 border-t-white rounded-full animate-spin" />Deleting…</span>

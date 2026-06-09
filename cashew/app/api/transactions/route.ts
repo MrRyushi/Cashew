@@ -45,7 +45,7 @@ export async function POST(req: Request) {
     const { description, amount, type, category, paymentMethod, transactionDate } = body
 
     // Basic Validation: Ensure mandatory fields are present
-    if (!description || !amount || !type || !category || !paymentMethod) {
+    if (!amount || !type || !category || !paymentMethod) {
       return new NextResponse('Missing required fields', { status: 400 })
     }
 
