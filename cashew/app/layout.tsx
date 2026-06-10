@@ -32,7 +32,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${plusJakartaSans.variable} ${inter.variable} ${jetBrainsMono.variable} antialiased`}>
+      <body className={`${plusJakartaSans.variable} ${inter.variable} ${jetBrainsMono.variable} antialiased dark:bg-slate-950`}>
         <ClerkProvider>
           <ThemeProvider
             attribute="class"

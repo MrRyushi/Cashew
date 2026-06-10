@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@custom-variant dark (&:where(.dark, .dark *));
 @theme {
   --color-brand: #6366F1;
   --color-brand-dark: #4F46E5;
@@ -16,6 +17,13 @@
   --color-warning: #F59E0B;
   --color-sidebar: #0F172A;
   --color-surface: #F8FAFC;
+}
+
+.dark {
+  @theme inline {
+    --color-background: #6366F1;  /* your custom dark bg */
+    --color-card: #6366F1;
+  }
 }
 
 .font-plus-jakarta-sans {

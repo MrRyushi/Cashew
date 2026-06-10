@@ -117,7 +117,7 @@ function getGreeting() {
 
 function SkeletonCard({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-white rounded-2xl border border-slate-200 p-5 animate-pulse", className)}>
+    <div className={cn("bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5 animate-pulse", className)}>
       <div className="h-3 bg-slate-100 rounded w-24 mb-4" />
       <div className="h-7 bg-slate-100 rounded w-36 mb-2" />
       <div className="h-2.5 bg-slate-100 rounded w-20" />
@@ -127,13 +127,13 @@ function SkeletonCard({ className }: { className?: string }) {
 
 function SkeletonChart({ className }: { className?: string }) {
   return (
-    <div className={cn("bg-white rounded-2xl border border-slate-200 p-5 animate-pulse", className)}>
+    <div className={cn("bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5 animate-pulse", className)}>
       <div className="h-3 bg-slate-100 rounded w-32 mb-6" />
       <div className="flex items-end gap-3 h-40">
         {[60, 80, 45, 90, 70, 55].map((h, i) => (
           <div key={i} className="flex gap-1 items-end flex-1">
-            <div className="bg-slate-100 rounded-t w-full" style={{ height: `${h}%` }} />
-            <div className="bg-slate-100 rounded-t w-full" style={{ height: `${h * 0.6}%` }} />
+            <div className="bg-slate-100 dark:bg-slate-700 rounded-t w-full" style={{ height: `${h}%` }} />
+            <div className="bg-slate-100 dark:bg-slate-700 rounded-t w-full" style={{ height: `${h * 0.6}%` }} />
           </div>
         ))}
       </div>
@@ -222,13 +222,13 @@ export default function DashboardPage() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
         {/* ── Header ── */}
         <div className="flex items-start justify-between mb-8">
           <div>
-            <p className="text-sm text-slate-500 mb-0.5">{getGreeting()},</p>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-0.5">{getGreeting()},</p>
             <h1 className="text-[22px] font-semibold  tracking-tight">
               {firstName} 👋
             </h1>
@@ -238,7 +238,7 @@ export default function DashboardPage() {
             size="sm"
             onClick={() => fetchDashboard(true)}
             disabled={refreshing}
-            className="text-xs text-slate-500 border-slate-200 hover:bg-slate-100 h-8 gap-1.5"
+            className="text-xs text-slate-200 dark:text-slate-300 border-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 hover:bg-slate-100 h-8 gap-1.5"
           >
             <RefreshCw className={cn("w-3.5 h-3.5", refreshing && "animate-spin")} />
             Refresh
@@ -247,13 +247,13 @@ export default function DashboardPage() {
 
         {/* ── Error ── */}
         {error && (
-          <div className="bg-rose-50 border border-rose-200 rounded-xl px-4 py-3 mb-6 flex items-center justify-between">
-            <p className="text-sm text-rose-600">{error}</p>
+          <div className="bg-rose-50 dark:bg-rose-950 border border-rose-200 dark:border-rose-700 rounded-xl px-4 py-3 mb-6 flex items-center justify-between">
+            <p className="text-sm text-rose-700 dark:text-rose-200">{error}</p>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => fetchDashboard()}
-              className="text-rose-600 hover:bg-rose-100 text-xs h-7"
+              className="text-rose-600 dark:text-rose-300 hover:bg-rose-100 dark:hover:bg-rose-900 text-xs h-7"
             >
               Retry
             </Button>
@@ -262,8 +262,8 @@ export default function DashboardPage() {
 
         {/* ── Empty state ── */}
         {isEmpty && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center mb-6">
-            <div className="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-12 text-center mb-6">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-50 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
               <Wallet className="w-7 h-7 text-indigo-400" />
             </div>
             <h2 className="text-base font-semibold text-slate-800 mb-1">No data yet</h2>
@@ -290,8 +290,8 @@ export default function DashboardPage() {
                 <div className={cn(
                   "col-span-2 rounded-2xl p-5 text-white",
                   isPositive
-                    ? "bg-indigo-500 shadow-lg shadow-indigo-200"
-                    : "bg-rose-500 shadow-lg shadow-rose-200"
+                    ? "bg-indigo-500 shadow-lg shadow-indigo-200 dark:bg-indigo-600 dark:shadow-indigo-900/30"
+                    : "bg-rose-500 shadow-lg shadow-rose-200 dark:bg-rose-600 dark:shadow-rose-900/30"
                 )}>
                   <div className="flex items-center gap-1.5 mb-4">
                     <Wallet className="w-3.5 h-3.5 opacity-70" />
@@ -311,7 +311,7 @@ export default function DashboardPage() {
               {loading ? (
                 <SkeletonCard />
               ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5">
                   <div className="flex items-center gap-1.5 mb-4">
                     <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500" />
                     <span className="text-xs font-medium text-slate-500">Income</span>
@@ -329,7 +329,7 @@ export default function DashboardPage() {
               {loading ? (
                 <SkeletonCard />
               ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5">
                   <div className="flex items-center gap-1.5 mb-4">
                     <ArrowDownRight className="w-3.5 h-3.5 text-rose-500" />
                     <span className="text-xs font-medium text-slate-500">Expenses</span>
@@ -351,10 +351,10 @@ export default function DashboardPage() {
               {loading ? (
                 <SkeletonChart className="md:col-span-2" />
               ) : (
-                <div className="md:col-span-2 bg-white rounded-2xl border border-slate-200 p-5">
+                <div className="md:col-span-2 bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5">
                   <div className="flex items-center justify-between mb-5">
                     <div>
-                      <h2 className="text-sm font-semibold text-slate-800">Monthly overview</h2>
+                      <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Monthly overview</h2>
                       <p className="text-xs text-slate-400 mt-0.5">Last 6 months</p>
                     </div>
                     <div className="flex items-center gap-3 text-[11px] text-slate-400">
@@ -424,8 +424,8 @@ export default function DashboardPage() {
               {loading ? (
                 <SkeletonChart />
               ) : (
-                <div className="bg-white rounded-2xl border border-slate-200 p-5">
-                  <h2 className="text-sm font-semibold text-slate-800 mb-1">
+                <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5">
+                  <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-1">
                     Top spending
                   </h2>
                   <p className="text-xs text-slate-400 mb-4">By category</p>
@@ -510,10 +510,10 @@ export default function DashboardPage() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 overflow-hidden">
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-                  <h2 className="text-sm font-semibold text-slate-800">Recent transactions</h2>
+                <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-700 bg-white dark:bg-slate-900">
+                  <h2 className="text-sm font-semibold text-slate-800 dark:text-slate-100">Recent transactions</h2>
                   <Link
                     href="/transactions"
                     className="text-xs text-indigo-500 hover:text-indigo-600 flex items-center gap-1 font-medium"
@@ -537,7 +537,7 @@ export default function DashboardPage() {
                       return (
                         <li
                           key={tx.id}
-                          className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors"
+                          className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-700 transition-colors"
                         >
                           {/* Category icon */}
                           <div className={cn(
@@ -549,15 +549,15 @@ export default function DashboardPage() {
 
                           {/* Info */}
                           <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-slate-800 truncate leading-snug">
+                            <p className="text-sm font-medium text-slate-800 dark:text-slate-100 truncate leading-snug">
                               {tx.description || tx.category}
                             </p>
                             <div className="flex items-center gap-2 mt-0.5">
-                              <span className="text-[10px] text-slate-400">
+                              <span className="text-[10px] text-slate-400 dark:text-slate-500">
                                 {formatDate(tx.transactionDate)}
                               </span>
                               <span className="text-slate-200">·</span>
-                              <span className="flex items-center gap-1 text-[10px] text-slate-400">
+                              <span className="flex items-center gap-1 text-[10px] text-slate-400 dark:text-slate-500">
                                 <CreditCard className="w-2.5 h-2.5" />
                                 {tx.paymentMethod}
                               </span>
@@ -567,7 +567,7 @@ export default function DashboardPage() {
                           {/* Amount */}
                           <span className={cn(
                             "font-mono text-sm font-semibold tabular-nums shrink-0",
-                            isIncome ? "text-emerald-600" : "text-slate-700"
+                            isIncome ? "text-emerald-600" : "text-rose-700"
                           )}>
                             {isIncome ? "+" : "−"}
                             {formatCurrency(tx.amount)}
@@ -578,7 +578,7 @@ export default function DashboardPage() {
                             "hidden sm:inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0",
                             isIncome
                               ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-slate-500"
+                              : "bg-slate-100 text-rose-700"
                           )}>
                             {isIncome ? (
                               <><TrendingUp className="w-2.5 h-2.5 mr-1" />Income</>

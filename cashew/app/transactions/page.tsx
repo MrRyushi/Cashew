@@ -360,7 +360,7 @@ export default function TransactionsPage() {
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen dark:bg-slate-950">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
 
           {/* ── Page Header ── */}
@@ -401,10 +401,10 @@ export default function TransactionsPage() {
             </div>
 
             {/* Income */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200">
+            <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl p-4 border border-slate-200">
               <div className="flex items-center gap-1.5 mb-3">
-                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-xs font-medium text-slate-500">Income</span>
+                <ArrowUpRight className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Income</span>
               </div>
               <p className="text-xl font-semibold text-emerald-600 font-mono tabular-nums leading-none">
                 {formatCurrency(totalIncome)}
@@ -412,10 +412,10 @@ export default function TransactionsPage() {
             </div>
 
             {/* Expenses */}
-            <div className="bg-white rounded-2xl p-4 border border-slate-200">
+            <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl p-4 border border-slate-200">
               <div className="flex items-center gap-1.5 mb-3">
-                <ArrowDownRight className="w-3.5 h-3.5 text-rose-500" />
-                <span className="text-xs font-medium text-slate-500">Expenses</span>
+                <ArrowDownRight className="w-3.5 h-3.5 text-rose-400" />
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Expenses</span>
               </div>
               <p className="text-xl font-semibold text-rose-500 font-mono tabular-nums leading-none">
                 {formatCurrency(totalExpenses)}
@@ -432,7 +432,7 @@ export default function TransactionsPage() {
                 placeholder="Search by note or category…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 h-9 text-sm bg-white border-slate-200 focus-visible:ring-indigo-400"
+                className="pl-9 h-9 text-sm bg-white dark:bg-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-700 focus-visible:ring-indigo-400"
               />
               {search && (
                 <button
@@ -445,8 +445,8 @@ export default function TransactionsPage() {
             </div>
 
             {/* Filter pills */}
-            <div className="flex items-center gap-1.5 bg-white border border-slate-200 rounded-lg px-1.5 py-1">
-              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400 ml-1" />
+            <div className="flex items-center gap-1.5 bg-white dark:bg-slate-900 dark:border-slate-700 border border-slate-200 rounded-lg px-1.5 py-1">
+              <SlidersHorizontal className="w-3.5 h-3.5 text-slate-400 dark:text-slate-400 ml-1" />
               {(["all", "INCOME", "EXPENSE"] as const).map((f) => (
                 <button
                   key={f}
@@ -465,7 +465,7 @@ export default function TransactionsPage() {
           </div>
 
           {/* ── Transaction List ── */}
-          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+          <div className="bg-white dark:bg-slate-900 *:dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 overflow-hidden shadow-sm">
 
             {/* Loading skeletons */}
             {loading && (
@@ -535,10 +535,10 @@ export default function TransactionsPage() {
                     <div key={dateKey}>
                       {/* Date group header */}
                       <div className={cn(
-                        "flex items-center justify-between px-5 py-2.5 bg-slate-50 border-b border-slate-100",
+                        "flex items-center justify-between px-5 py-2.5 bg-slate-50 dark:bg-slate-950 border-b border-slate-100 dark:border-slate-700",
                         groupIdx > 0 && "border-t"
                       )}>
-                        <span className="text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                        <span className="text-xs font-semibold text-slate-500 dark:text-gray-400 uppercase tracking-wide">
                           {dayLabel}
                         </span>
                         <span className="text-xs text-slate-400">
@@ -547,7 +547,7 @@ export default function TransactionsPage() {
                       </div>
 
                       {/* Rows for this date */}
-                      <ul className="divide-y divide-slate-100">
+                      <ul className="divide-y divide-slate-100 dark:divide-slate-500">
                         {dayTxs.map((tx) => {
                           const meta = CATEGORY_META[tx.category] ?? CATEGORY_META["Other"];
                           const Icon = meta.icon;
@@ -555,7 +555,7 @@ export default function TransactionsPage() {
                           return (
                             <li
                               key={tx.id}
-                              className="group flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 transition-colors"
+                              className="group flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50/80 dark:hover:bg-slate-800 transition-colors"
                             >
                               {/* Category icon */}
                               <div className={cn(
@@ -567,15 +567,15 @@ export default function TransactionsPage() {
 
                               {/* Info */}
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-slate-800 truncate leading-snug">
+                                <p className="text-sm font-medium text-slate-800 dark:text-white truncate leading-snug">
                                   {tx.description || tx.category}
                                 </p>
                                 <div className="flex items-center gap-1.5 mt-0.5">
                                   <span className={cn(
                                     "inline-flex items-center text-[10px] font-medium px-1.5 py-0.5 rounded-full",
                                     tx.type === "INCOME"
-                                      ? "bg-emerald-50 text-emerald-700"
-                                      : "bg-slate-100 text-slate-500"
+                                      ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300"
+                                      : "bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-200"
                                   )}>
                                     {tx.category}
                                   </span>
@@ -585,7 +585,7 @@ export default function TransactionsPage() {
                               {/* Amount */}
                               <span className={cn(
                                 "font-mono text-sm font-semibold tabular-nums shrink-0",
-                                tx.type === "INCOME" ? "text-emerald-600" : "text-slate-700"
+                                tx.type === "INCOME" ? "text-emerald-600" : "text-rose-500"
                               )}>
                                 {tx.type === "INCOME" ? "+" : "−"}
                                 {formatCurrency(tx.amount)}
@@ -617,7 +617,7 @@ export default function TransactionsPage() {
                 })}
 
                 {/* Footer count */}
-                <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50">
+                <div className="px-5 py-3 border-t border-slate-100 bg-slate-50/50 dark:bg-gray-800/50 dark:border-gray-600">
                   <p className="text-xs text-slate-400 text-center">
                     Showing {filtered.length} of {transactions.length} transactions
                   </p>
@@ -630,7 +630,7 @@ export default function TransactionsPage() {
 
       {/* ── Add / Edit Dialog ── */}
       <Dialog open={dialogOpen} onOpenChange={(open) => { setDialogOpen(open); setFormError(null); }}>
-        <DialogContent className="sm:max-w-md bg-surface">
+        <DialogContent className="sm:max-w-md bg-surface dark:bg-slate-900">
           <DialogHeader>
             <DialogTitle className="text-base font-semibold">
               {editingId ? "Edit transaction" : "New transaction"}
@@ -640,7 +640,7 @@ export default function TransactionsPage() {
           <div className="grid gap-4 py-1">
 
             {/* Type toggle */}
-            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 rounded-xl">
+            <div className="grid grid-cols-2 gap-2 p-1 bg-slate-200 dark:bg-slate-700 rounded-xl">
               {(["EXPENSE", "INCOME"] as const).map((t) => (
                 <button
                   key={t}
@@ -649,9 +649,9 @@ export default function TransactionsPage() {
                     "py-2 rounded-lg text-sm font-medium transition-all capitalize",
                     form.type === t
                       ? t === "INCOME"
-                        ? "bg-white text-emerald-600 shadow-sm ring-1 ring-emerald-200"
-                        : "bg-white text-rose-500 shadow-sm ring-1 ring-rose-200"
-                      : "text-slate-500 hover:text-slate-700"
+                        ? "bg-white dark:bg-slate-950 text-emerald-600 shadow-sm ring-1 ring-emerald-200"
+                        : "bg-white dark:bg-slate-950 text-rose-500 shadow-sm ring-1 ring-rose-200"
+                      : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-600 "
                   )}
                 >
                   {t === "INCOME"
@@ -697,7 +697,7 @@ export default function TransactionsPage() {
                     const meta = CATEGORY_META[cat] ?? CATEGORY_META["Other"];
                     const CatIcon = meta.icon;
                     return (
-                      <SelectItem key={cat} value={cat} className="text-sm bg-white hover:bg-slate-100">
+                      <SelectItem key={cat} value={cat} className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">
                         <span className="flex items-center gap-2">
                           <span className={cn("flex w-5 h-5 rounded items-center justify-center", meta.bg)}>
                             <CatIcon className={cn("w-3 h-3", meta.color)} />
@@ -736,14 +736,14 @@ export default function TransactionsPage() {
                   <SelectValue placeholder="Select payment method" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="Cash" className="text-sm bg-white hover:bg-slate-100">Cash</SelectItem>
-                  <SelectItem value="Credit Card" className="text-sm bg-white hover:bg-slate-100">Credit Card</SelectItem>
-                  <SelectItem value="Debit Card" className="text-sm bg-white hover:bg-slate-100">Debit Card</SelectItem>
-                  <SelectItem value="GCash" className="text-sm bg-white hover:bg-slate-100">GCash</SelectItem>
-                  <SelectItem value="PayPal" className="text-sm bg-white hover:bg-slate-100">PayPal</SelectItem>
-                  <SelectItem value="Bank Transfer" className="text-sm bg-white hover:bg-slate-100">Bank Transfer</SelectItem>
-                  <SelectItem value="Check" className="text-sm bg-white hover:bg-slate-100">Check</SelectItem>
-                  <SelectItem value="Other" className="text-sm bg-white hover:bg-slate-100">Other</SelectItem>
+                  <SelectItem value="Cash" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Cash</SelectItem>
+                  <SelectItem value="Credit Card" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Credit Card</SelectItem>
+                  <SelectItem value="Debit Card" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Debit Card</SelectItem>
+                  <SelectItem value="GCash" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">GCash</SelectItem>
+                  <SelectItem value="PayPal" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">PayPal</SelectItem>
+                  <SelectItem value="Bank Transfer" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Bank Transfer</SelectItem>
+                  <SelectItem value="Check" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Check</SelectItem>
+                  <SelectItem value="Other" className="text-sm bg-white dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-700">Other</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -773,7 +773,7 @@ export default function TransactionsPage() {
             <Button
               variant="outline"
               onClick={() => setDialogOpen(false)}
-              className="text-sm"
+              className="text-sm hover:bg-slate-100 dark:hover:bg-slate-700"
             >
               Cancel
             </Button>
