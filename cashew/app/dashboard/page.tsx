@@ -331,10 +331,10 @@ export default function DashboardPage() {
               ) : (
                 <div className="bg-white dark:bg-slate-900 dark:border-slate-700 rounded-2xl border border-slate-200 p-5">
                   <div className="flex items-center gap-1.5 mb-4">
-                    <ArrowDownRight className="w-3.5 h-3.5 text-rose-500" />
+                    <ArrowDownRight className="w-3.5 h-3.5 text-red-400" />
                     <span className="text-xs font-medium text-slate-500">Expenses</span>
                   </div>
-                  <p className="text-xl font-semibold text-rose-500 font-mono tabular-nums leading-none mb-2">
+                  <p className="text-xl font-semibold text-red-400 font-mono tabular-nums leading-none mb-2">
                     {formatCompact(data!.summary.totalExpenses)}
                   </p>
                   <p className="text-[10px] text-slate-400 font-mono">
@@ -567,7 +567,7 @@ export default function DashboardPage() {
                           {/* Amount */}
                           <span className={cn(
                             "font-mono text-sm font-semibold tabular-nums shrink-0",
-                            isIncome ? "text-emerald-600" : "text-rose-700"
+                            isIncome ? "text-emerald-600" : "text-red-400"
                           )}>
                             {isIncome ? "+" : "−"}
                             {formatCurrency(tx.amount)}
@@ -578,7 +578,7 @@ export default function DashboardPage() {
                             "hidden sm:inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0",
                             isIncome
                               ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-rose-700"
+                              : "bg-slate-100 text-red-400"
                           )}>
                             {isIncome ? (
                               <><TrendingUp className="w-2.5 h-2.5 mr-1" />Income</>
