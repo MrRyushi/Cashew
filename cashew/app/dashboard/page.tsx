@@ -238,7 +238,7 @@ export default function DashboardPage() {
             size="sm"
             onClick={() => fetchDashboard(true)}
             disabled={refreshing}
-            className="text-xs text-slate-200 dark:text-slate-300 border-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 hover:bg-slate-100 h-8 gap-1.5"
+            className="text-xs text-slate-200 dark:text-slate-300  dark:hover:bg-indigo-600 hover:bg-slate-100 h-8 gap-1.5"
           >
             <RefreshCw className={cn("w-3.5 h-3.5", refreshing && "animate-spin")} />
             Refresh
@@ -449,7 +449,7 @@ export default function DashboardPage() {
                               innerRadius={36}
                               outerRadius={56}
                               strokeWidth={2}
-                              stroke="#fff"
+                              stroke="#e2e8f0"
                               paddingAngle={2}
                             >
                               {data!.categoryBreakdown.map((entry) => {
@@ -478,10 +478,10 @@ export default function DashboardPage() {
                                 style={{ background: meta.chartColor }}
                               />
                               <Icon className={cn("w-3 h-3 shrink-0", meta.color)} />
-                              <span className="text-xs text-slate-600 flex-1 truncate">
+                              <span className="text-xs text-slate-600 dark:text-slate-50 flex-1 truncate">
                                 {entry.category}
                               </span>
-                              <span className="text-[11px] font-mono text-slate-400">
+                              <span className="text-[11px] font-mono text-slate-400 dark:text-slate-200">
                                 {entry.percentage}%
                               </span>
                             </li>
@@ -528,7 +528,7 @@ export default function DashboardPage() {
                     No transactions yet
                   </div>
                 ) : (
-                  <ul className="divide-y divide-slate-100">
+                  <ul className="divide-y divide-slate-100 dark:divide-slate-600">
                     {data!.recentTransactions.map((tx) => {
                       const meta = CATEGORY_META[tx.category] ?? FALLBACK_META;
                       const Icon = meta.icon;
@@ -578,7 +578,7 @@ export default function DashboardPage() {
                             "hidden sm:inline-flex items-center text-[10px] font-medium px-2 py-0.5 rounded-full shrink-0",
                             isIncome
                               ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-red-400"
+                              : "bg-red-100 text-red-400"
                           )}>
                             {isIncome ? (
                               <><TrendingUp className="w-2.5 h-2.5 mr-1" />Income</>

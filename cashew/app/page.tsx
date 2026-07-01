@@ -72,9 +72,11 @@ export default function Home() {
                 )}
               </div>
 
-              <div className="mt-6 text-sm text-slate-500 dark:text-slate-400">
-                New here? Create an account to get started.
-              </div>
+              {!isSignedIn && (
+                <div className="mt-6 text-sm text-slate-500 dark:text-slate-400">
+                  New here? Create an account to get started.
+                </div>
+              )}
             </div>
           </div>
 

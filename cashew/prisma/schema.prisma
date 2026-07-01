@@ -32,7 +32,24 @@ model Transaction {
   @@index([userId])
 }
 
+model Budget {
+  id          String   @id @default(cuid())
+  userId      String
+  category    String
+  limitAmount Float
+  month       Int      // 1–12
+  year        Int      // e.g. 2026
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // One budget per user per category per month/year — no duplicates
+  @@unique([userId, category, month, year])
+  @@index([userId])
+}
+
+
 enum TransactionType {
   INCOME
   EXPENSE
 }
+

@@ -19,12 +19,7 @@
   --color-surface: #F8FAFC;
 }
 
-.dark {
-  @theme inline {
-    --color-background: #6366F1;  /* your custom dark bg */
-    --color-card: #6366F1;
-  }
-}
+
 
 .font-plus-jakarta-sans {
   font-family: var(--font-plus-jakarta-sans), sans-serif;
